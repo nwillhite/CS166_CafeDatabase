@@ -268,7 +268,7 @@ public class Cafe {
 	      switch (user_type){
 		case "Customer": 
 		  while(usermenu) {
-                    System.out.println("MAIN MENU");
+                    System.out.println("Customer MAIN MENU");
                     System.out.println("---------");
                     System.out.println("1. Browse Menu by ItemName");
                     System.out.println("2. Browse Menu by Type");
@@ -293,7 +293,7 @@ public class Cafe {
 		  } break;
 		case "Employee": 
 		  while(usermenu) {
-                    System.out.println("MAIN MENU");
+                    System.out.println("Employee MAIN MENU");
                     System.out.println("---------");
                     System.out.println("1. Browse Menu by ItemName");
                     System.out.println("2. Browse Menu by Type");
@@ -318,7 +318,7 @@ public class Cafe {
 		  } break;
 		case "Manager ": 
 		  while(usermenu) {
-                    System.out.println("MAIN MENU");
+                    System.out.println("Manager MAIN MENU");
                     System.out.println("---------");
                     System.out.println("1. Browse Menu by ItemName");
                     System.out.println("2. Browse Menu by Type");
@@ -390,7 +390,7 @@ public class Cafe {
    }//end readChoice
 
    /*
-    * Creates a new user with privided login, passowrd and phoneNum
+    * Creates a new user with privided login, password and phoneNum
     **/
    public static void CreateUser(Cafe esql){
       try{
@@ -428,6 +428,8 @@ public class Cafe {
          int userNum = esql.executeQuery(query);
 	 if (userNum > 0)
 		return login;
+	 else
+		System.out.println("\t \nInvalid Log In Credentials. \n");
          return null;
       }catch(Exception e){
          System.err.println (e.getMessage ());
@@ -436,10 +438,20 @@ public class Cafe {
    }//end
 
    public static String find_type(Cafe esql){
-      // Your code goes here.
-      // ...
-      // ...
-      return "Employee";
+	
+	try
+	{
+      String query = String.format("SELECT U.type FROM Users U WHERE U.login = '%s' ", authorisedUser);
+      
+      List<List<String>> userType = esql.executeQueryAndReturnResult(query);
+     
+      return userType.get(0).get(0);
+	}
+	catch(Exception e)
+	{
+         System.err.println (e.getMessage ());
+         return null;
+      }
    }
 
    public static void BrowseMenuName(Cafe esql){
