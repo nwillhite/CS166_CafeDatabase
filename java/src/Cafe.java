@@ -456,12 +456,11 @@ public class Cafe {
        try
        {
            String query = String.format("SELECT M.itemName FROM Menu M");
-           executeQueryAndPrintResult(query);
+           int itemName = esql.executeQueryAndPrintResult(query);
        }
        catch(Exception e)
        {
            System.err.println (e.getMessage ());
-           return null;
        }
    }//end
 
@@ -470,12 +469,11 @@ public class Cafe {
        try
        {
            String query = String.format("SELECT M.type FROM Menu M");
-           executeQueryAndPrintResult(query);
+           int itemType = esql.executeQueryAndPrintResult(query);
        }
        catch(Exception e)
        {
            System.err.println (e.getMessage ());
-           return null;
        }
    }//end
 
