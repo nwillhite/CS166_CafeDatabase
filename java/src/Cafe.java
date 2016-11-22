@@ -435,23 +435,48 @@ public class Cafe {
       }
    }//end
 
-   public static String find_type(Cafe esql){
-      // Your code goes here.
-      // ...
-      // ...
-      return "Employee";
+   public static String find_type(Cafe esql)
+   {
+       try
+       {
+           String query = String.format("SELECT U.type FROM Users U WHERE U.login = '%s", authorisedUser );
+           List<List<String>> userType = esql.executeQueryAndReturnResult(query);
+
+           return userType.get(0).get(0);
+       }
+       catch(Exception e)
+       {
+           System.err.println (e.getMessage ());
+           return null;
+       }
    }
 
-   public static void BrowseMenuName(Cafe esql){
-      // Your code goes here.
-      // ...
-      // ...
+   public static void BrowseMenuName(Cafe esql)
+   {
+       try
+       {
+           String query = String.format("SELECT M.itemName FROM Menu M");
+           executeQueryAndPrintResult(query);
+       }
+       catch(Exception e)
+       {
+           System.err.println (e.getMessage ());
+           return null;
+       }
    }//end
 
-   public static void BrowseMenuType(Cafe esql){
-      // Your code goes here.
-      // ...
-      // ...
+   public static void BrowseMenuType(Cafe esql)
+   {
+       try
+       {
+           String query = String.format("SELECT M.type FROM Menu M");
+           executeQueryAndPrintResult(query);
+       }
+       catch(Exception e)
+       {
+           System.err.println (e.getMessage ());
+           return null;
+       }
    }//end
 
    public static Integer AddOrder(Cafe esql){
