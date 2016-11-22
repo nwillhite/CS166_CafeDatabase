@@ -439,7 +439,7 @@ public class Cafe {
    {
        try
        {
-           String query = String.format("SELECT U.type FROM Users U WHERE U.login = '%s", authorisedUser );
+           String query = String.format("SELECT U.type FROM Users U WHERE U.login = '%s'", authorisedUser );
            List<List<String>> userType = esql.executeQueryAndReturnResult(query);
 
            return userType.get(0).get(0);
@@ -468,7 +468,7 @@ public class Cafe {
    {
        try
        {
-           String query = String.format("SELECT M.type FROM Menu M");
+           String query = String.format("SELECT DISTINCT M.type FROM Menu M");
            int itemType = esql.executeQueryAndPrintResult(query);
        }
        catch(Exception e)
