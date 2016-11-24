@@ -23,6 +23,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.*;
 
 /**
  * This class defines a simple embedded SQL utility class that is designed to
@@ -478,9 +479,89 @@ public class Cafe {
    }//end
 
    public static Integer AddOrder(Cafe esql){
-      // Your code goes here.
-      // ...
-      // ...
+      try
+      {
+         Vector<String> orderNames = new Vector();
+         Vector<Double> orderPrices = new Vector();
+         String query = String.format("SELECT itemName, price FROM Menu");
+         List<List<String>> itemLists = esql.executeQueryAndReturnResult(query);
+         int numItems = itemLists.size();
+         boolean moreitems = true;
+         double orderPriceTotal = 0.00, numPrice = 0.00;
+         String curItem = "", curPrice = "";
+         System.out.println("\n\tCafe Menu");
+         do
+         {
+            //pull menu items from query
+            for(int i = 0; i < itemLists.size(); ++i)
+            {
+               curItem = itemLists.get(i).get(0); //get menu item name
+               curPrice = itemLists.get(i).get(1); //get menu item price
+               numPrice = Double.parseDouble(curPrice); //convert string to double
+               numPrice = Math.round(numPrice * 100.0) / 100.0; //round to 2 decimals
+               //System.out.print(i + ")   $" + numPrice + "    " + curItem + "\n"); // display menu items
+               System.out.println(String.format("%d)   $%-6.2f    %s", i, numPrice, curItem)); 
+            }
+            
+            System.out.print("\nItems in Cart: ");
+            for(int i = 0;i < orderNames.size(); ++i)
+            {
+               System.out.print(orderNames.get(i) + "  ");
+            }
+            System.out.println(String.format("\nOrder Total: $%.2f", orderPriceTotal));
+            System.out.print("\nEnter item number to add it to the order -- OR -- Enter " + numItems + " to checkout: ");
+            int itemChoice = Integer.parseInt(in.readLine());
+            if(itemChoice < numItems)
+            { 
+               //add item to order vector
+               orderNames.add(itemLists.get(itemChoice).get(0).trim().replaceAll(" +", " ")); //trim elims extra spaces
+               //add price of chosen item to item total
+               curPrice = itemLists.get(itemChoice).get(1);
+               numPrice = Double.parseDouble(curPrice);
+               numPrice = Math.round(numPrice * 100.0) / 100.0;
+               //add price to order vector
+               orderPrices.add(numPrice);
+               orderPriceTotal += numPrice;
+               orderPriceTotal = Math.round(orderPriceTotal * 100.0) / 100.0;
+               moreitems = true;
+            }
+            else if(itemChoice == numItems)
+            {
+               moreitems = false;
+            }
+            else
+               System.out.println("INVALID Entry!");
+         }while(moreitems);
+         if(orderNames.size() > 0)
+         {
+            System.out.println("items in this order: ");
+            for(int i = 0; i < orderNames.size(); ++i)
+            {
+               System.out.print(orderNames.get(i) + " $" + orderPrices.get(i) + "\n");
+            }
+               System.out.print("Order total:   $" + orderPriceTotal + "\n");
+               System.out.println("Confirm order?     0)yes     1) no");
+               int confOrder = Integer.parseInt(in.readLine());
+            if(confOrder == 0)
+            {
+               //insert order and items into databases
+            }
+            else
+            {
+               System.out.println("Order Cancelled");
+            }
+         }
+         else
+         {
+            System.out.println("No items chosen, order cancelled.");
+         }
+
+      }
+      catch(Exception e)
+      {
+         System.err.println(e.getMessage());
+         return null;
+      }
       Integer orderid=0;
       return orderid;
    }//end 
