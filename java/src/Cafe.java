@@ -612,11 +612,90 @@ public class Cafe {
       // ...
    }//end
 
-   public static void UpdateUserInfo(Cafe esql){
-      // Your code goes here.
-      // ...
-      // ...
+   public static void UpdateUserInfo(Cafe esql)
+   {
+
+        currentUser = authorisedUser;
+        boolean getChoice = true;
+
+        while(getChoice)
+        {
+            System.out.println("Update User Information");
+            System.out.println("1. Update Password");
+            System.out.println("2. Update Phone Number");
+            System.out.println("3. Update Favorite Items");
+            System.out.println("4. Return to Main Menu");
+
+            switch(esql.readChoice())
+            {
+                case 1: UpdatePassword(esql, currentUser);
+                        break;
+                case 2:UpdatePhoneNumber(esql);
+                        break;
+                case 3:UpdateFavItems(esql);
+                        break;
+                case 4: getChoice = false;
+                        break;
+
+            }
+        }
+
    }//end
+
+   public static void UpdatePassword(Cafe esql, String currentUser)
+   {
+       String password;
+       
+       try
+       {
+           System.out.print("\tEnter new password");
+           password = esql.in.readLine();
+           String query = String.format("UPDATE users set password = '%s' WHERE login = '"+currentUser+"' ", password);
+           esql.executeUpadte(query);
+       }
+       catch
+       {
+           System.err.println(e.getMessage());
+       }
+   } //end updatePassword helper
+
+
+   public static void UpdatePhoneNumber(Cafe esql, String currentUser)
+   {
+       String number;
+       
+       try
+       {
+           System.out.print("\tEnter new phone number");
+           number = esql.in.readLine();
+           String query = String.format("UPDATE users set phoneNum = '%s' WHERE login = '"+currentUser+"' ", number);
+           esql.executeUpadte(query);
+       }
+       catch
+       {
+           System.err.println(e.getMessage());
+       }
+   } //end updatePhoneNumber helper
+
+
+   public static void UpdateFavItems(Cafe esql, String currentUser)
+   {
+       String items;
+       
+       try
+       {
+           System.out.print("\tEnter new items");
+           items = esql.in.readLine();
+           String query = String.format("UPDATE users set favItems = '%s' WHERE login = '"+currentUser+"' ", items);
+           esql.executeUpadte(query);
+       }
+       catch
+       {
+           System.err.println(e.getMessage());
+       }
+   } //end updatePassword helper
+
+
 
    public static void ManagerUpdateUserInfo(Cafe esql){
       // Your code goes here.
