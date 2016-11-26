@@ -657,6 +657,7 @@ public class Cafe {
        {
            System.err.println (e.getMessage());
        }
+
    } //end updatePassword helper
 
 
@@ -675,6 +676,7 @@ public class Cafe {
        {
            System.err.println (e.getMessage());
        }
+
    } //end updatePhoneNumber helper
 
 
@@ -693,6 +695,7 @@ public class Cafe {
        {
            System.err.println (e.getMessage());
        }
+
    } //end updatePassword helper
 
 
@@ -709,10 +712,24 @@ public class Cafe {
       // ...
    }//end
 
-   public static void ViewOrderStatus(Cafe esql){
-      // Your code goes here.
-      // ...
-      // ...
+   public static void ViewOrderStatus(Cafe esql)
+   {
+       String orderId;
+       
+       try
+       {
+           
+         System.out.println("\tEnter Order Id");
+         orderId = esql.in.readLine();
+         String query = String.format("SELECT * FROM ItemStatus WHERE orderid = '%s' ", orderId);
+
+         esql.executeQueryAndPrintResult(query);
+       }
+       catch (Exception e)
+       {
+           System.err.println (e.getMessage());
+       }
+    
    }//end
 
    public static void ViewCurrentOrder(Cafe esql){
