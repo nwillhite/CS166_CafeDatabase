@@ -540,11 +540,27 @@ public class Cafe {
                System.out.print(orderNames.get(i) + " $" + orderPrices.get(i) + "\n");
             }
                System.out.print("Order total:   $" + orderPriceTotal + "\n");
-               System.out.println("Confirm order?     0)yes     1) no");
+               System.out.println("Confirm order?  0)yes    1) no");
                int confOrder = Integer.parseInt(in.readLine());
             if(confOrder == 0)
             {
                //insert order and items into databases
+               boolean hasPaid = false;
+               query = String.format("INSERT INTO ORDERS (login, paid, timeStampRecieved, total) VALUES ('"+ authorisedUser +"', "+ hasPaid +", now()::timestamp, "+ orderPriceTotal +")");
+               //List<List<String>> qryResult= esql.executeQueryAndReturnResult(query);
+               esql.executeUpdate(query);
+               //System.out.println("Order placed");                  
+               query = String.format("SELECT MAX(orderid) FROM Orders O WHERE O.login ='" + authorisedUser + "' AND paid = false" );
+               List<List<String>> orderIDquery= esql.executeQueryAndReturnResult(query);
+               String oid = orderIDquery.get(0).get(0);
+               //insert menu items for order
+               String statusDefault = "order processing", commentsDefault = "thank you for your order";
+               for(int i = 0; i < orderNames.size(); ++i)
+               {
+                  query = String.format("INSERT INTO ItemStatus (orderid, itemName, lastUpdated, status, comments) VALUES ("+ oid+", '"+ orderNames.get(i) +"', now()::timestamp, '"+statusDefault+"', '"+ commentsDefault +"' )");
+                  esql.executeUpdate(query);
+               }
+               System.out.println("Order Placed Successfully");
             }
             else
             {
@@ -567,9 +583,21 @@ public class Cafe {
    }//end 
 
    public static void UpdateOrder(Cafe esql){
-      // Your code goes here.
-      // ...
-      // ...
+      try
+      {
+         String query = String.format("SELECT * FROM Orders O WHERE O.login ='" + authorisedUser+"' AND paid = false" );
+         int testola = esql.executeQueryAndPrintResult(query);
+         query = String.format("SELECT MAX(orderid) FROM Orders O WHERE O.login ='" + authorisedUser + "' AND paid = false" );
+         List<List<String>> orderIDquery= esql.executeQueryAndReturnResult(query);
+         String oid = orderIDquery.get(0).get(0);
+         query = String.format("SELECT * FROM ItemStatus I WHERE I.orderid ='" + oid +"'");
+         testola = esql.executeQueryAndPrintResult(query);
+ 
+      }
+      catch(Exception e)
+      {
+         System.err.println (e.getMessage() );
+      }
    }//end
 
    public static void EmployeeUpdateOrder(Cafe esql){
