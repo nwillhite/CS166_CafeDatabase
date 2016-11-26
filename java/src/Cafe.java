@@ -615,7 +615,7 @@ public class Cafe {
    public static void UpdateUserInfo(Cafe esql)
    {
 
-        currentUser = authorisedUser;
+        String currentUser = authorisedUser;
         boolean getChoice = true;
 
         while(getChoice)
@@ -630,9 +630,9 @@ public class Cafe {
             {
                 case 1: UpdatePassword(esql, currentUser);
                         break;
-                case 2:UpdatePhoneNumber(esql);
+                case 2:UpdatePhoneNumber(esql, currentUser);
                         break;
-                case 3:UpdateFavItems(esql);
+                case 3:UpdateFavItems(esql, currentUser);
                         break;
                 case 4: getChoice = false;
                         break;
@@ -651,11 +651,11 @@ public class Cafe {
            System.out.print("\tEnter new password");
            password = esql.in.readLine();
            String query = String.format("UPDATE users set password = '%s' WHERE login = '"+currentUser+"' ", password);
-           esql.executeUpadte(query);
+           esql.executeUpdate(query);
        }
-       catch
+       catch (Exception e)
        {
-           System.err.println(e.getMessage());
+           System.err.println (e.getMessage());
        }
    } //end updatePassword helper
 
@@ -669,11 +669,11 @@ public class Cafe {
            System.out.print("\tEnter new phone number");
            number = esql.in.readLine();
            String query = String.format("UPDATE users set phoneNum = '%s' WHERE login = '"+currentUser+"' ", number);
-           esql.executeUpadte(query);
+           esql.executeUpdate(query);
        }
-       catch
+       catch (Exception e)
        {
-           System.err.println(e.getMessage());
+           System.err.println (e.getMessage());
        }
    } //end updatePhoneNumber helper
 
@@ -687,11 +687,11 @@ public class Cafe {
            System.out.print("\tEnter new items");
            items = esql.in.readLine();
            String query = String.format("UPDATE users set favItems = '%s' WHERE login = '"+currentUser+"' ", items);
-           esql.executeUpadte(query);
+           esql.executeUpdate(query);
        }
-       catch
+       catch (Exception e)
        {
-           System.err.println(e.getMessage());
+           System.err.println (e.getMessage());
        }
    } //end updatePassword helper
 
