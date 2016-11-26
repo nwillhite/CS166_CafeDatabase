@@ -630,9 +630,9 @@ public class Cafe {
             {
                 case 1: UpdatePassword(esql, currentUser);
                         break;
-                case 2:UpdatePhoneNumber(esql, currentUser);
+                case 2: UpdatePhoneNumber(esql, currentUser);
                         break;
-                case 3:UpdateFavItems(esql, currentUser);
+                case 3: UpdateFavItems(esql, currentUser);
                         break;
                 case 4: getChoice = false;
                         break;
@@ -700,10 +700,54 @@ public class Cafe {
 
 
 
-   public static void ManagerUpdateUserInfo(Cafe esql){
-      // Your code goes here.
-      // ...
-      // ...
+   public static void ManagerUpdateUserInfo(Cafe esql)
+   {
+        String currentUser = authorisedUser;
+        String editUser;
+        boolean getChoice = true;
+       
+       /* 
+        try
+        {
+            System.out.println("\tEnter User to Edit");
+            pickUser = esql.in.readLine();
+            String query = String.format("SELECT U.login FROM Users U WHERE login = '%s' ", pickUser);
+            List<List<String>> pickUser = esql.executeQueryAndReturnResult(query);
+
+            editUser =  pickUser.get(0).get(0);
+       }
+       catch(Exception e)
+       {
+           System.err.println (e.getMessage ());
+           return null;
+       }
+       */ 
+
+        while(getChoice)
+        {
+            System.out.println("Update User Information");
+            System.out.println("1. Update Password");
+            System.out.println("2. Update Phone Number");
+            System.out.println("3. Update Favorite Items");
+            System.out.println("4. Update Type");
+            System.out.println("5. Return to Main Menu");
+
+            switch(esql.readChoice())
+            {
+                case 1: UpdatePassword(esql, currentUser);
+                        break;
+                case 2: UpdatePhoneNumber(esql, currentUser);
+                        break;
+                case 3: UpdateFavItems(esql, currentUser);
+                        break;
+              //  case 5: UpdateType(esql, currentUser);
+              //          break;
+                case 5: getChoice = false;
+                        break;
+
+            }
+        }
+
    }//end
 
    public static void UpdateMenu(Cafe esql){
