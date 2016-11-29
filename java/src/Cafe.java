@@ -648,7 +648,7 @@ public class Cafe {
        
        try
        {
-           System.out.print("\tEnter new password");
+           System.out.print("\n Enter new password \n");
            password = esql.in.readLine();
            String query = String.format("UPDATE users set password = '%s' WHERE login = '"+currentUser+"' ", password);
            esql.executeUpdate(query);
@@ -667,7 +667,7 @@ public class Cafe {
        
        try
        {
-           System.out.print("\tEnter new phone number");
+           System.out.print("\n Enter new phone number \n");
            number = esql.in.readLine();
            String query = String.format("UPDATE users set phoneNum = '%s' WHERE login = '"+currentUser+"' ", number);
            esql.executeUpdate(query);
@@ -686,7 +686,7 @@ public class Cafe {
        
        try
        {
-           System.out.print("\tEnter new items");
+           System.out.print("\n Enter new items \n");
            items = esql.in.readLine();
            String query = String.format("UPDATE users set favItems = '%s' WHERE login = '"+currentUser+"' ", items);
            esql.executeUpdate(query);
@@ -696,8 +696,26 @@ public class Cafe {
            System.err.println (e.getMessage());
        }
 
-   } //end updatePassword helper
+   } //end updateFavItems helper
 
+ 
+   public static void UpdateType(Cafe esql, String currentUser)
+   {
+       String type;
+       
+       try
+       {
+           System.out.print("\n Enter User Type to be changed \n");
+           type = esql.in.readLine();
+           String query = String.format("UPDATE users set type = '%s' WHERE login = '"+currentUser+"' ", type);
+           esql.executeUpdate(query);
+       }
+       catch (Exception e)
+       {
+           System.err.println (e.getMessage());
+       }
+
+   } //end updateFavItems helper  
 
 
    public static void ManagerUpdateUserInfo(Cafe esql)
@@ -705,23 +723,10 @@ public class Cafe {
         String currentUser = authorisedUser;
         String editUser;
         boolean getChoice = true;
-       
-       /* 
-        try
-        {
-            System.out.println("\tEnter User to Edit");
-            pickUser = esql.in.readLine();
-            String query = String.format("SELECT U.login FROM Users U WHERE login = '%s' ", pickUser);
-            List<List<String>> pickUser = esql.executeQueryAndReturnResult(query);
-
-            editUser =  pickUser.get(0).get(0);
-       }
-       catch(Exception e)
-       {
-           System.err.println (e.getMessage ());
-           return null;
-       }
-       */ 
+        
+        System.out.println("\tEnter User to Edit");
+        editUser = System.console().readLine();
+ 
 
         while(getChoice)
         {
@@ -734,14 +739,14 @@ public class Cafe {
 
             switch(esql.readChoice())
             {
-                case 1: UpdatePassword(esql, currentUser);
+                case 1: UpdatePassword(esql, editUser);
                         break;
-                case 2: UpdatePhoneNumber(esql, currentUser);
+                case 2: UpdatePhoneNumber(esql, editUser);
                         break;
-                case 3: UpdateFavItems(esql, currentUser);
+                case 3: UpdateFavItems(esql, editUser);
                         break;
-              //  case 5: UpdateType(esql, currentUser);
-              //          break;
+                case 4: UpdateType(esql, editUser);
+                        break;
                 case 5: getChoice = false;
                         break;
 
