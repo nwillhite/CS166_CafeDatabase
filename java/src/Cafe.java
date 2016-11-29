@@ -607,9 +607,30 @@ public class Cafe {
    }//end
 
    public static void ViewOrderHistory(Cafe esql){
-      // Your code goes here.
-      // ...
-      // ...
+      try
+      {
+         String query = String.format("SELECT O.orderid, O.total FROM Orders O WHERE O.login ='" + authorisedUser +"' AND O.paid = false ORDER BY orderid DESC LIMIT 5" );
+         List<List<String>> orderIDquery= esql.executeQueryAndReturnResult(query);
+         for(int i = 0; i < 5; ++i)
+         {
+            String oidstring = orderIDquery.get(i).get(0);
+            String orderTotal= orderIDquery.get(i).get(1);
+            double numTotal = Double.parseDouble(orderTotal); //convert string to double
+            int oid = Integer.parseInt(oidstring);
+            query = String.format("SELECT * FROM ItemStatus I WHERE I.orderid = " + oid);
+            List<List<String>> itemquery= esql.executeQueryAndReturnResult(query);
+            System.out.println("Order #: " + oid);
+            for(int j = 0; j < itemquery.size(); ++j)
+            {   
+              System.out.print(itemquery.get(j).get(1).trim().replaceAll(" +", " ")+ " " + itemquery.get(j).get(2) + "\n"); 
+            }   
+            System.out.println(String.format("Total: $%.2f", numTotal)); 
+         }   
+      }
+      catch(Exception e)
+      {
+         System.err.println (e.getMessage());
+      }
    }//end
 
    public static void UpdateUserInfo(Cafe esql)
@@ -785,6 +806,33 @@ public class Cafe {
       // Your code goes here.
       // ...
       // ...
+      try
+      {
+         String query = String.format("SELECT O.orderid, O.total, O.login FROM Orders O WHERE O.paid = false AND O.timeStampRecieved >= NOW() - '1 day'::INTERVAL" );
+         List<List<String>> orderIDquery= esql.executeQueryAndReturnResult(query);
+         for(int i = 0; i < orderIDquery.size(); ++i)
+         {
+            String oidstring = orderIDquery.get(i).get(0);
+            String orderTotal= orderIDquery.get(i).get(1);
+            String orderLogin = orderIDquery.get(i).get(2);
+            double numTotal = Double.parseDouble(orderTotal); //convert string to double
+            int oid = Integer.parseInt(oidstring);
+            query = String.format("SELECT * FROM ItemStatus I WHERE I.orderid = " + oid);
+            List<List<String>> itemquery= esql.executeQueryAndReturnResult(query);
+            System.out.println("Order #: " + oid);
+            for(int j = 0; j < itemquery.size(); ++j)
+            {
+               System.out.print(itemquery.get(j).get(1).trim().replaceAll(" +", " ")+ " " + itemquery.get(j).get(2) + "\n"); 
+            }
+            System.out.println(String.format("Total: $%.2f     Customer: %s", numTotal, orderLogin)); 
+
+         }
+
+      }
+      catch (Exception e)
+      {
+          System.err.println (e.getMessage());
+      }
    }//end
 
    public static void Query6(Cafe esql){
