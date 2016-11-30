@@ -269,7 +269,7 @@ public class Cafe {
 	      switch (user_type){
 		case "Customer": 
 		  while(usermenu) {
-                    System.out.println("MAIN MENU");
+                    System.out.println("MAIN MENU - Customer");
                     System.out.println("---------");
                     System.out.println("1. Browse Menu by ItemName");
                     System.out.println("2. Browse Menu by Type");
@@ -294,7 +294,7 @@ public class Cafe {
 		  } break;
 		case "Employee": 
 		  while(usermenu) {
-                    System.out.println("MAIN MENU");
+                    System.out.println("MAIN MENU - Employee");
                     System.out.println("---------");
                     System.out.println("1. Browse Menu by ItemName");
                     System.out.println("2. Browse Menu by Type");
@@ -319,7 +319,7 @@ public class Cafe {
 		  } break;
 		case "Manager ": 
 		  while(usermenu) {
-                    System.out.println("MAIN MENU");
+                    System.out.println("MAIN MENU - Manager");
                     System.out.println("---------");
                     System.out.println("1. Browse Menu by ItemName");
                     System.out.println("2. Browse Menu by Type");
@@ -585,14 +585,126 @@ public class Cafe {
    public static void UpdateOrder(Cafe esql){
       try
       {
-         String query = String.format("SELECT * FROM Orders O WHERE O.login ='" + authorisedUser+"' AND paid = false" );
-         int testola = esql.executeQueryAndPrintResult(query);
-         query = String.format("SELECT MAX(orderid) FROM Orders O WHERE O.login ='" + authorisedUser + "' AND paid = false" );
-         List<List<String>> orderIDquery= esql.executeQueryAndReturnResult(query);
-         String oid = orderIDquery.get(0).get(0);
-         query = String.format("SELECT * FROM ItemStatus I WHERE I.orderid ='" + oid +"'");
-         testola = esql.executeQueryAndPrintResult(query);
- 
+         System.out.print("\n Enter Order ID for the order you wish to update:  \n");
+         String oidstring = esql.in.readLine();
+         int oid = Integer.parseInt(oidstring);
+         String query = String.format("SELECT * FROM Orders O WHERE O.login ='" + authorisedUser+"' AND O.paid = false AND O.orderid ="+ oid );
+         List<List<String>> orderquery= esql.executeQueryAndReturnResult(query);
+         oidstring = orderquery.get(0).get(0);
+         oid = Integer.parseInt(oidstring);
+         boolean cont = true;
+         do
+         {
+            query = String.format("SELECT * FROM ItemStatus I WHERE I.orderid = " + oid);
+            List<List<String>> itemquery= esql.executeQueryAndReturnResult(query);
+            System.out.println("Order #: " + oid);
+            query = String.format("SELECT total FROM Orders WHERE orderid = " + oid);
+            for(int j = 0; j < itemquery.size(); ++j)
+            {
+              System.out.print(j + ") " + itemquery.get(j).get(1).trim().replaceAll(" +", " ")+ " " + itemquery.get(j).get(2) + "\n");
+            }
+            List<List<String>> totalquery = esql.executeQueryAndReturnResult(query);
+            String oTotalString = totalquery.get(0).get(0);
+            double oTotal = Double.parseDouble(oTotalString);
+            oTotal = Math.round(oTotal * 100.0) / 100.0;
+            System.out.println("Total cost: $" + oTotal);
+            System.out.print(" Enter number of item to edit OR\n '" + itemquery.size() + "' to add item OR \n '" + (itemquery.size() + 1) + "' to finish\n");
+            int numItem = esql.readChoice();
+            if(numItem == itemquery.size()+1)// finished
+            {
+               cont = false;
+            }
+            else if(numItem == itemquery.size()) //add item
+            {
+                String statusDefault = "order processing", commentsDefault = "thank you for your order";
+                query = String.format("SELECT itemName, price FROM Menu");
+                  List<List<String>> itemLists = esql.executeQueryAndReturnResult(query);
+                  for(int i = 0; i < itemLists.size(); ++i)
+                  {
+                     String curItem = itemLists.get(i).get(0); //get menu item name
+                     String curPrice = itemLists.get(i).get(1); //get menu item price
+                     double numPrice = Double.parseDouble(curPrice); //convert string to double
+                     numPrice = Math.round(numPrice * 100.0) / 100.0; //round to 2 decimals
+                     System.out.println(String.format("%d)   $%-6.2f    %s", i, numPrice, curItem)); 
+                  }
+                  System.out.println("Enter Item Number of item you wish to add");
+                  int newItemNum = esql.readChoice();
+                  String newName = itemLists.get(newItemNum).get(0);
+                  String newPriceString = itemLists.get(newItemNum).get(1);
+                  double newPrice = Double.parseDouble(newPriceString);
+                  newPrice = Math.round(newPrice * 100.0) / 100.0;
+                  query = String.format("INSERT INTO ItemStatus (orderid, itemName, lastUpdated, status, comments) VALUES ("+ oid +", '"+ newName +"', now()::timestamp, '"+statusDefault+"', '"+ commentsDefault +"' )");
+                  esql.executeUpdate(query);
+                  query = String.format("UPDATE Orders SET (total) = (total + " + newPrice + ") WHERE orderid =" + oid); 
+                  esql.executeUpdate(query);
+
+            }
+            else if(numItem < itemquery.size() && numItem >= 0) //edit item
+            {
+               String itemName = itemquery.get(numItem).get(1);
+               query = String.format("SELECT M.price FROM Menu M WHERE M.itemName = '" + itemName + "'");
+               List<List<String>> pricequery = esql.executeQueryAndReturnResult(query);
+               String itemCostString = pricequery.get(0).get(0);
+               double itemCost = Double.parseDouble(itemCostString);
+               itemCost = Math.round(itemCost * 100.0) / 100.0;
+               System.out.println("0) swap item  1) remove item");
+               int numAction = esql.readChoice();
+               if(numAction == 0)
+               {
+                  query = String.format("SELECT itemName, price FROM Menu");
+                  List<List<String>> itemLists = esql.executeQueryAndReturnResult(query);
+                  for(int i = 0; i < itemLists.size(); ++i)
+                  {
+                     String curItem = itemLists.get(i).get(0); //get menu item name
+                     String curPrice = itemLists.get(i).get(1); //get menu item price
+                     double numPrice = Double.parseDouble(curPrice); //convert string to double
+                     numPrice = Math.round(numPrice * 100.0) / 100.0; //round to 2 decimals
+                     System.out.println(String.format("%d)   $%-6.2f    %s", i, numPrice, curItem)); 
+                  }
+                  System.out.println("Enter New Item Number");
+                  int newItemNum = esql.readChoice();
+                  String newName = itemLists.get(newItemNum).get(0);
+                  String newPriceString = itemLists.get(newItemNum).get(1);
+                  double newPrice = Double.parseDouble(newPriceString);
+                  newPrice = Math.round(newPrice * 100.0) / 100.0;
+                  query = String.format("UPDATE ItemStatus SET (itemName, lastUpdated) = ('" + newName + "',now()::timestamp) WHERE orderid = " + oid + " AND itemName = '" + itemName + "'");
+                  esql.executeUpdate(query);
+                  double priceModifier = newPrice-itemCost; //new cost - old cost
+                  query = String.format("UPDATE Orders SET (total) = (total + " + priceModifier + ") WHERE orderid =" + oid); 
+                  esql.executeUpdate(query);
+               }
+               else if(numAction == 1)
+               {
+                  //FIXME delete item and update order totalprice
+                  if(itemquery.size() == 1) //when down to last item, if deleted, remove order completely
+                  {
+                     query = String.format("DELETE FROM ItemStatus WHERE orderid = " + oid + " AND itemName = '" + itemName + "'");
+                     esql.executeUpdate(query);
+                     query = String.format("DELETE FROM Orders WHERE orderid = " + oid);
+                     esql.executeUpdate(query);
+                     System.out.println("Entire Order Deleted, last item removed");
+                     cont = false;
+                  }
+                  else if(itemquery.size() > 1)
+                  {
+                     query = String.format("DELETE FROM ItemStatus WHERE orderid = " + oid + " AND itemName = '" + itemName + "'");
+                     esql.executeUpdate(query); 
+                     query = String.format("UPDATE Orders SET (total) = (total - " + itemCost + ") WHERE orderid =" + oid); 
+                     esql.executeUpdate(query);
+
+                     System.out.println("Item Removed");
+                  }
+               }
+               else
+               {
+                  System.out.println("Invalid Entry");
+               }
+            }
+            else
+            {
+               System.out.println("Invalid Entry");
+            }
+         }while(cont == true);
       }
       catch(Exception e)
       {
@@ -803,9 +915,6 @@ public class Cafe {
    }//end
 
    public static void ViewCurrentOrder(Cafe esql){
-      // Your code goes here.
-      // ...
-      // ...
       try
       {
          String query = String.format("SELECT O.orderid, O.total, O.login FROM Orders O WHERE O.paid = false AND O.timeStampRecieved >= NOW() - '1 day'::INTERVAL" );
