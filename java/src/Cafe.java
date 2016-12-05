@@ -964,8 +964,8 @@ public class Cafe {
                         break;
                 case 2: DeleteItem(esql);
                         break;
-               // case 3: UpdateItem(esql);
-            //            break;
+                case 3: UpdateItem(esql);
+                        break;
                 case 4: getChoice = false;
                         break;
 
@@ -979,7 +979,7 @@ public class Cafe {
    {
        String itemName;
        String type;
-       double price;
+       String  price;
        String description;
        String imageUrl;
 
@@ -992,7 +992,7 @@ public class Cafe {
            type = esql.in.readLine();
           
            System.out.println("\n Enter Price \n");
-           price = esql.readChoice();
+           price = esql.in.readLine();
           
            System.out.println("\n Enter Description");
            description = esql.in.readLine();
@@ -1031,6 +1031,118 @@ public class Cafe {
       }
    } //end
 
+   
+   public static void UpdateItem(Cafe esql)
+   {
+       String item;
+       String itemNew;
+       String type;
+       String price;
+       String des;
+       String imageUrl;
+       
+       System.out.println("\n Enter Item to Update \n");
+       item = System.console().readLine();
+       
+       boolean getChoice = true;
+
+       while(getChoice)
+       {
+          System.out.println("1. Update Item Name");
+          System.out.println("2. Update Item Type");
+          System.out.println("3. Update Price");
+          System.out.println("4. Update Description");
+          System.out.println("5. Update imageUrl");
+          System.out.println("6. Return to Main Menu");
+
+          switch(esql.readChoice())
+          {
+             case 1: 
+                    try
+                     {
+                        System.out.println("\n Enter New Item Name \n");
+                        itemNew = esql.in.readLine(); 
+                        
+                        String query = String.format("UPDATE Menu set itemName = '%s' WHERE itemName = '"+item+"'", itemNew);
+
+                         esql.executeUpdate(query);
+
+                     }
+                     catch (Exception e)
+                     {
+                         System.err.println(e.getMessage());
+                     }
+                     break;
+             case 2: 
+                     try
+                     {
+                        System.out.println("\n Enter New Type \n");
+                        type = esql.in.readLine(); 
+                        
+                        String query = String.format("UPDATE Menu set type = '%s' WHERE itemName = '%s'", type, item);
+                         esql.executeUpdate(query);
+
+                     }
+                     catch (Exception e)
+                     {
+                         System.err.println(e.getMessage());
+                     }
+                     break;
+
+             case 3: 
+                   try
+                     {
+                        System.out.println("\n Enter New Price \n");
+                        price  = esql.in.readLine(); 
+                        
+                        String query = String.format("UPDATE Menu set price = '%s' WHERE itemName = '%s'", price, item);
+                         esql.executeUpdate(query);
+
+                     }
+                     catch (Exception e)
+                     {
+                         System.err.println(e.getMessage());
+                     }
+                     break;
+             case 4:
+                   try
+                     {
+                        System.out.println("\n Enter New Item Name \n");
+                        des = esql.in.readLine(); 
+                        
+                        String query = String.format("UPDATE Menu set description = '%s' WHERE itemName = '%s'", des, item);
+                        
+                        esql.executeUpdate(query);
+
+                     }
+                     catch (Exception e)
+                     {
+                         System.err.println(e.getMessage());
+                     }
+                     break;
+             case 5:
+                   try
+                     {
+                        System.out.println("\n Enter New Item Name \n");
+                        imageUrl = esql.in.readLine(); 
+                        
+                        String query = String.format("UPDATE Menu set imageURL = '%s' WHERE itemName = '%s'", imageUrl, item);
+
+                        esql.executeUpdate(query);
+
+                     }
+                     catch (Exception e)
+                     {
+                         System.err.println(e.getMessage());
+                     }
+                     break;
+
+             case 6: getChoice = false;
+                     break;
+            }
+        }
+
+   } //end
 
    public static void ViewOrderStatus(Cafe esql)
    {
