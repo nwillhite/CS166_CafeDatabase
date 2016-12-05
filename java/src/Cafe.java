@@ -457,7 +457,35 @@ public class Cafe {
        try
        {
            String query = String.format("SELECT M.itemName FROM Menu M");
-           int itemName = esql.executeQueryAndPrintResult(query);
+           List<List<String>> itemnames= esql.executeQueryAndReturnResult(query);
+           System.out.println();
+           for(int i = 0; i < itemnames.size(); ++i)
+           {
+              System.out.println(" " + i + ") " + itemnames.get(i).get(0));
+           }
+           System.out.println("\n Select # for item details");
+           int choice = esql.readChoice();
+           if(choice < 0 || choice >= itemnames.size())
+           {
+               System.out.println("Invalid Input\n");
+           }
+           else
+           {
+               query = String.format("SELECT * FROM Menu M WHERE itemName = '" + itemnames.get(choice).get(0) + "'");
+               List<List<String>> itemdeets = esql.executeQueryAndReturnResult(query);
+               for(int i = 0; i < itemdeets.size(); ++i)
+               {
+                  //0 name,1 type,2 price,3 description,4 url
+                  System.out.println("Name: " + itemdeets.get(i).get(0));
+                  System.out.println("Type: " + itemdeets.get(i).get(1));
+                  String stringPrice = itemdeets.get(i).get(2);
+                  double numPrice = Double.parseDouble(stringPrice);
+                  numPrice = Math.round(numPrice * 100.0) / 100.0; //round to 2 decimals
+                  System.out.println(String.format("Price: $%.2f", numPrice));
+                  System.out.println("Description:\n " + itemdeets.get(i).get(3));
+                  System.out.println("Url:\n " + itemdeets.get(i).get(4) + "\n");
+               }
+           }
        }
        catch(Exception e)
        {
@@ -476,7 +504,7 @@ public class Cafe {
            {
                System.out.println(" "  + i + ") " + menutypes.get(i).get(0));
            }
-           System.out.println(" Select # for type you wish to browse: ");
+           System.out.println("\n Select # for type you wish to browse: ");
            int choice = esql.readChoice();
            if(choice < 0 || choice >= menutypes.size())
            {
