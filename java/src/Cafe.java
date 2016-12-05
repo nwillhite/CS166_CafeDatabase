@@ -675,7 +675,7 @@ public class Cafe {
                }
                else if(numAction == 1)
                {
-                  //FIXME delete item and update order totalprice
+                  //delete item and update order totalprice
                   if(itemquery.size() == 1) //when down to last item, if deleted, remove order completely
                   {
                      query = String.format("DELETE FROM ItemStatus WHERE orderid = " + oid + " AND itemName = '" + itemName + "'");
@@ -713,9 +713,49 @@ public class Cafe {
    }//end
 
    public static void EmployeeUpdateOrder(Cafe esql){
-      // Your code goes here.
-      // ...
-      // ...
+      try
+      {
+         System.out.println(" 0) update personal order \n 1) Update order paid \n 2) Update item status");
+         int choice = esql.readChoice();
+         if(choice == 0)
+         {
+            UpdateOrder(esql);
+         }
+         else if(choice == 1)
+         {
+            System.out.println("Enter an Orderid to set it to paid");
+            String oidstring = esql.in.readLine();
+            int oid = Integer.parseInt(oidstring);
+            String query = String.format("UPDATE Orders SET paid = true WHERE orderid =" + oid); 
+            esql.executeUpdate(query);
+         }
+         else if(choice == 2)
+         {
+            System.out.println("Enter an Orderid");
+            String oidstring = esql.in.readLine();
+            int oid = Integer.parseInt(oidstring);
+            System.out.println("Enter the Item Name");
+            String itemstring = esql.in.readLine();
+            String query = String.format("SELECT status FROM ItemStatus WHERE orderid = " + oid + " AND itemName = '" + itemstring + "'");
+            esql.executeQueryAndPrintResult(query);
+
+            System.out.println("Enter new status: ");
+            String statusString = esql.in.readLine();
+            query = String.format("UPDATE ItemStatus SET status = '" + statusString + "' WHERE orderid = " + oid + " AND itemName = '" + itemstring + "'");
+            esql.executeUpdate(query);
+            System.out.println("Status Updated!");
+            query = String.format("SELECT status FROM ItemStatus WHERE orderid = " + oid + " AND itemName = '" + itemstring + "'");
+            esql.executeQueryAndPrintResult(query);
+         }
+         else
+         {
+            System.out.println("Invalid Option");
+         }
+      }
+      catch(Exception e)
+      {
+         System.err.println (e.getMessage() );
+      }
    }//end
 
    public static void ViewOrderHistory(Cafe esql){
