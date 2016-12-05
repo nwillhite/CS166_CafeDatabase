@@ -439,7 +439,7 @@ public class Cafe {
 
 /*****************************************************************************/
 
-Beginning of user created functions
+ //  Beginning of user created functions //
 
 /*****************************************************************************/
 
@@ -1062,10 +1062,10 @@ Beginning of user created functions
            System.out.println("\n Enter Price \n");
            price = esql.in.readLine();
           
-           System.out.println("\n Enter Description");
+           System.out.println("\n Enter Description \n");
            description = esql.in.readLine();
           
-           System.out.println("\n Enter Item Image Url");
+           System.out.println("\n Enter Item Image Url \n");
            imageUrl = esql.in.readLine();
         
             String query = String.format("INSERT INTO Menu (itemName, type, price, description, imageURL) VALUES ('%s','%s','%s','%s','%s')", itemName, type, price, description, imageUrl);
@@ -1134,6 +1134,7 @@ Beginning of user created functions
                         String query = String.format("UPDATE Menu set itemName = '%s' WHERE itemName = '"+item+"'", itemNew);
 
                          esql.executeUpdate(query);
+                         return;
 
                      }
                      catch (Exception e)
@@ -1254,12 +1255,12 @@ Beginning of user created functions
             int oid = Integer.parseInt(oidstring);
             query = String.format("SELECT * FROM ItemStatus I WHERE I.orderid = " + oid);
             List<List<String>> itemquery= esql.executeQueryAndReturnResult(query);
-            System.out.println("Order #: " + oid);
+            System.out.println("\n Order #: " + oid);
             for(int j = 0; j < itemquery.size(); ++j)
             {
                System.out.print(itemquery.get(j).get(1).trim().replaceAll(" +", " ")+ " " + itemquery.get(j).get(2) + "\n"); 
             }
-            System.out.println(String.format("Total: $%.2f     Customer: %s", numTotal, orderLogin)); 
+            System.out.println(String.format("Total: $%.2f     Customer: %s \n", numTotal, orderLogin)); 
 
          }
 
