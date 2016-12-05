@@ -975,11 +975,90 @@ public class Cafe {
 
    }//end
 
-   public static void UpdateMenu(Cafe esql){
-      // Your code goes here.
-      // ...
-      // ...
+   public static void UpdateMenu(Cafe esql)
+   {
+        boolean getChoice = true;
+
+        while(getChoice)
+        {
+            System.out.println("1. Add item");
+            System.out.println("2. Delete item");
+            System.out.println("3. Update item");
+            System.out.println("4. Return to Main Menu");
+
+            switch(esql.readChoice())
+            {
+                case 1: AddItem(esql);
+                        break;
+                case 2: DeleteItem(esql);
+                        break;
+               // case 3: UpdateItem(esql);
+            //            break;
+                case 4: getChoice = false;
+                        break;
+
+            }
+        }
+
    }//end
+
+   
+   public static void AddItem(Cafe esql)
+   {
+       String itemName;
+       String type;
+       double price;
+       String description;
+       String imageUrl;
+
+       try
+       {
+           System.out.println("\n Enter Item Name \n");
+           itemName = esql.in.readLine();
+          
+           System.out.println("\n Enter Item Type \n");
+           type = esql.in.readLine();
+          
+           System.out.println("\n Enter Price \n");
+           price = esql.readChoice();
+          
+           System.out.println("\n Enter Description");
+           description = esql.in.readLine();
+          
+           System.out.println("\n Enter Item Image Url");
+           imageUrl = esql.in.readLine();
+        
+            String query = String.format("INSERT INTO Menu (itemName, type, price, description, imageURL) VALUES ('%s','%s','%s','%s','%s')", itemName, type, price, description, imageUrl);
+
+            esql.executeUpdate(query);
+            System.out.println("Item Added Successfully");
+       }
+       catch(Exception e)
+       {
+           System.err.println (e.getMessage());
+       }
+
+   } //end
+   
+   public static void DeleteItem(Cafe esql)
+   {
+      String itemName;
+
+      try
+      {
+          System.out.println("\n Enter Item to Delete \n");
+          itemName = esql.in.readLine();
+
+          String query = String.format("DELETE FROM Menu WHERE itemName = '%s'", itemName);
+
+          esql.executeUpdate(query);
+      }
+      catch(Exception e)
+      {
+          System.err.println (e.getMessage ());
+      }
+   } //end
+
 
    public static void ViewOrderStatus(Cafe esql)
    {
