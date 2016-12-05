@@ -436,6 +436,14 @@ public class Cafe {
       }
    }//end
 
+
+/*****************************************************************************/
+
+Beginning of user created functions
+
+/*****************************************************************************/
+
+
    public static String find_type(Cafe esql)
    {
        try
@@ -451,6 +459,10 @@ public class Cafe {
            return null;
        }
    }
+
+
+/*****************************************************************************/
+
 
    public static void BrowseMenuName(Cafe esql)
    {
@@ -493,6 +505,10 @@ public class Cafe {
        }
    }//end
 
+
+/*****************************************************************************/
+
+
    public static void BrowseMenuType(Cafe esql)
    {
        try
@@ -524,6 +540,10 @@ public class Cafe {
            System.err.println (e.getMessage ());
        }
    }//end
+
+
+/*****************************************************************************/
+
 
    public static Integer AddOrder(Cafe esql){
       try
@@ -628,6 +648,10 @@ public class Cafe {
       Integer orderid=0;
       return orderid;
    }//end 
+
+
+/*****************************************************************************/
+
 
    public static void UpdateOrder(Cafe esql){
       try
@@ -759,6 +783,10 @@ public class Cafe {
       }
    }//end
 
+
+/*****************************************************************************/
+
+
    public static void EmployeeUpdateOrder(Cafe esql){
       try
       {
@@ -805,6 +833,10 @@ public class Cafe {
       }
    }//end
 
+
+/*****************************************************************************/
+
+
    public static void ViewOrderHistory(Cafe esql){
       try
       {
@@ -831,6 +863,10 @@ public class Cafe {
          System.err.println (e.getMessage());
       }
    }//end
+
+
+/*****************************************************************************/
+
 
    public static void UpdateUserInfo(Cafe esql)
    {
@@ -974,6 +1010,10 @@ public class Cafe {
         }
 
    }//end
+
+
+/*****************************************************************************/
+
 
    public static void UpdateMenu(Cafe esql)
    {
@@ -1172,6 +1212,10 @@ public class Cafe {
 
    } //end
 
+
+/*****************************************************************************/
+
+
    public static void ViewOrderStatus(Cafe esql)
    {
        String orderId;
@@ -1191,6 +1235,10 @@ public class Cafe {
        }
     
    }//end
+
+
+/*****************************************************************************/
+
 
    public static void ViewCurrentOrder(Cafe esql){
       try
@@ -1221,6 +1269,9 @@ public class Cafe {
           System.err.println (e.getMessage());
       }
    }//end
+
+
+/*****************************************************************************/
 
    public static void Query6(Cafe esql){
       // Your code goes here.
