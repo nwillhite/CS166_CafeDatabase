@@ -488,7 +488,7 @@ public class Cafe {
                for(int i = 0; i < itemdeets.size(); ++i)
                {
                   //0 name,1 type,2 price,3 description,4 url
-                  System.out.println("Name: " + itemdeets.get(i).get(0));
+                  System.out.println("\nName: " + itemdeets.get(i).get(0));
                   System.out.println("Type: " + itemdeets.get(i).get(1));
                   String stringPrice = itemdeets.get(i).get(2);
                   double numPrice = Double.parseDouble(stringPrice);
@@ -556,9 +556,10 @@ public class Cafe {
          boolean moreitems = true;
          double orderPriceTotal = 0.00, numPrice = 0.00;
          String curItem = "", curPrice = "";
-         System.out.println("\n\tCafe Menu");
+         //System.out.println("\n\tCafe Menu");
          do
          {
+            System.out.println("\n\tCafe Menu");
             //pull menu items from query
             for(int i = 0; i < itemLists.size(); ++i)
             {
@@ -566,30 +567,47 @@ public class Cafe {
                curPrice = itemLists.get(i).get(1); //get menu item price
                numPrice = Double.parseDouble(curPrice); //convert string to double
                numPrice = Math.round(numPrice * 100.0) / 100.0; //round to 2 decimals
-               //System.out.print(i + ")   $" + numPrice + "    " + curItem + "\n"); // display menu items
                System.out.println(String.format("%d)   $%-6.2f    %s", i, numPrice, curItem)); 
             }
-            
+            //display current cart 
             System.out.print("\nItems in Cart: ");
             for(int i = 0;i < orderNames.size(); ++i)
             {
                System.out.print(orderNames.get(i) + "  ");
             }
             System.out.println(String.format("\nOrder Total: $%.2f", orderPriceTotal));
-            System.out.print("\nEnter item number to add it to the order -- OR -- Enter " + numItems + " to checkout: ");
-            int itemChoice = Integer.parseInt(in.readLine());
-            if(itemChoice < numItems)
-            { 
-               //add item to order vector
-               orderNames.add(itemLists.get(itemChoice).get(0).trim().replaceAll(" +", " ")); //trim elims extra spaces
-               //add price of chosen item to item total
-               curPrice = itemLists.get(itemChoice).get(1);
-               numPrice = Double.parseDouble(curPrice);
-               numPrice = Math.round(numPrice * 100.0) / 100.0;
-               //add price to order vector
-               orderPrices.add(numPrice);
-               orderPriceTotal += numPrice;
-               orderPriceTotal = Math.round(orderPriceTotal * 100.0) / 100.0;
+            System.out.println("\n Enter item number to add it to the order\n -- OR -- \n " + numItems + " to checkout or cancel");
+            int itemChoice = esql.readChoice();
+            if(itemChoice < numItems && itemChoice >= 0)
+            {
+               String Name = itemLists.get(itemChoice).get(0).trim().replaceAll(" +", " ");
+               int numCt = 0;
+               for(int i = 0; i < orderNames.size(); ++i)
+               {
+                  if(orderNames.get(i).equals(Name))
+                  {
+                     numCt++;
+                     break;
+                  }
+               }
+               //no duplicate orders allowed
+               if(numCt > 0)
+               {
+                  System.out.println("Error: Can only add one of each item");
+               }
+               else
+               {
+                  //add item to order vector
+                  orderNames.add(Name); 
+                  //add price of chosen item to item total
+                  curPrice = itemLists.get(itemChoice).get(1);
+                  numPrice = Double.parseDouble(curPrice);
+                  numPrice = Math.round(numPrice * 100.0) / 100.0;
+                  //add price to order vector
+                  orderPrices.add(numPrice);
+                  orderPriceTotal += numPrice;
+                  orderPriceTotal = Math.round(orderPriceTotal * 100.0) / 100.0;
+               }
                moreitems = true;
             }
             else if(itemChoice == numItems)
@@ -597,26 +615,24 @@ public class Cafe {
                moreitems = false;
             }
             else
-               System.out.println("INVALID Entry!");
+               System.out.println("\nINVALID Entry!\n");
          }while(moreitems);
          if(orderNames.size() > 0)
          {
-            System.out.println("items in this order: ");
+            System.out.println("\nitems in this order: \n");
             for(int i = 0; i < orderNames.size(); ++i)
             {
-               System.out.print(orderNames.get(i) + " $" + orderPrices.get(i) + "\n");
+               System.out.println(String.format("%s $%.2f", orderNames.get(i), numPrice)); 
             }
-               System.out.print("Order total:   $" + orderPriceTotal + "\n");
-               System.out.println("Confirm order?  0)yes    1) no");
-               int confOrder = Integer.parseInt(in.readLine());
+               System.out.println(String.format("Order total:   $%.2f ", orderPriceTotal));
+               System.out.println("\nConfirm order?  \n 0) yes   \n 1) no");
+               int confOrder = esql.readChoice();
             if(confOrder == 0)
             {
                //insert order and items into databases
                boolean hasPaid = false;
                query = String.format("INSERT INTO ORDERS (login, paid, timeStampRecieved, total) VALUES ('"+ authorisedUser +"', "+ hasPaid +", now()::timestamp, "+ orderPriceTotal +")");
-               //List<List<String>> qryResult= esql.executeQueryAndReturnResult(query);
                esql.executeUpdate(query);
-               //System.out.println("Order placed");                  
                query = String.format("SELECT MAX(orderid) FROM Orders O WHERE O.login ='" + authorisedUser + "' AND paid = false" );
                List<List<String>> orderIDquery= esql.executeQueryAndReturnResult(query);
                String oid = orderIDquery.get(0).get(0);
@@ -627,16 +643,16 @@ public class Cafe {
                   query = String.format("INSERT INTO ItemStatus (orderid, itemName, lastUpdated, status, comments) VALUES ("+ oid+", '"+ orderNames.get(i) +"', now()::timestamp, '"+statusDefault+"', '"+ commentsDefault +"' )");
                   esql.executeUpdate(query);
                }
-               System.out.println("Order Placed Successfully");
+               System.out.println("\nOrder Placed Successfully\n");
             }
             else
             {
-               System.out.println("Order Cancelled");
+               System.out.println("\nOrder Cancelled\n");
             }
          }
          else
          {
-            System.out.println("No items chosen, order cancelled.");
+            System.out.println("\nNo items chosen, order cancelled.\n");
          }
 
       }
@@ -668,46 +684,60 @@ public class Cafe {
          {
             query = String.format("SELECT * FROM ItemStatus I WHERE I.orderid = " + oid);
             List<List<String>> itemquery= esql.executeQueryAndReturnResult(query);
-            System.out.println("Order #: " + oid);
+            System.out.println("\nOrder #: " + oid);
             query = String.format("SELECT total FROM Orders WHERE orderid = " + oid);
             for(int j = 0; j < itemquery.size(); ++j)
             {
-              System.out.print(j + ") " + itemquery.get(j).get(1).trim().replaceAll(" +", " ")+ " " + itemquery.get(j).get(2) + "\n");
+              System.out.print("  " + j + ") " + itemquery.get(j).get(1).trim().replaceAll(" +", " ")+ " " + itemquery.get(j).get(2) + "\n");
             }
             List<List<String>> totalquery = esql.executeQueryAndReturnResult(query);
             String oTotalString = totalquery.get(0).get(0);
             double oTotal = Double.parseDouble(oTotalString);
             oTotal = Math.round(oTotal * 100.0) / 100.0;
-            System.out.println("Total cost: $" + oTotal);
-            System.out.print(" Enter number of item to edit OR\n '" + itemquery.size() + "' to add item OR \n '" + (itemquery.size() + 1) + "' to finish\n");
+            System.out.println(String.format("Total cost: $%.2f \n", oTotal));
+            System.out.print(" Enter number of item to edit OR\n '" + itemquery.size() + "' to add item OR \n '" + (itemquery.size() + 1) + "' to cancel order OR\n '" + (itemquery.size() + 2) + "' to finish\n");
             int numItem = esql.readChoice();
-            if(numItem == itemquery.size()+1)// finished
+            if(numItem == itemquery.size()+2)// finished
             {
                cont = false;
+            }
+            else if(numItem == itemquery.size() + 1) //cancel order
+            {
+               System.out.println("\nCancel Entire Order?\n 0) yes\n 1) no");
+               int cancel = esql.readChoice();
+               if(cancel == 0)
+               {
+                   query = String.format("DELETE FROM ItemStatus WHERE orderid =" + oid);
+                   esql.executeUpdate(query);
+                   query = String.format("DELETE FROM Orders WHERE orderid =" + oid);
+                   esql.executeUpdate(query);
+                   System.out.println("\nOrder Cancelled\n");
+                   cont = false;
+               }
             }
             else if(numItem == itemquery.size()) //add item
             {
                 String statusDefault = "order processing", commentsDefault = "thank you for your order";
                 query = String.format("SELECT itemName, price FROM Menu");
-                  List<List<String>> itemLists = esql.executeQueryAndReturnResult(query);
-                  for(int i = 0; i < itemLists.size(); ++i)
-                  {
-                     String curItem = itemLists.get(i).get(0); //get menu item name
-                     String curPrice = itemLists.get(i).get(1); //get menu item price
-                     double numPrice = Double.parseDouble(curPrice); //convert string to double
-                     numPrice = Math.round(numPrice * 100.0) / 100.0; //round to 2 decimals
-                     System.out.println(String.format("%d)   $%-6.2f    %s", i, numPrice, curItem)); 
-                  }
-                  System.out.println("Enter Item Number of item you wish to add");
-                  int newItemNum = esql.readChoice();
-                  String newName = itemLists.get(newItemNum).get(0);
-                  String newPriceString = itemLists.get(newItemNum).get(1);
-                  double newPrice = Double.parseDouble(newPriceString);
-                  newPrice = Math.round(newPrice * 100.0) / 100.0;
-                  query = String.format("INSERT INTO ItemStatus (orderid, itemName, lastUpdated, status, comments) VALUES ("+ oid +", '"+ newName +"', now()::timestamp, '"+statusDefault+"', '"+ commentsDefault +"' )");
-                  esql.executeUpdate(query);
-                  query = String.format("UPDATE Orders SET (total) = (total + " + newPrice + ") WHERE orderid =" + oid); 
-                  esql.executeUpdate(query);
+                List<List<String>> itemLists = esql.executeQueryAndReturnResult(query);
+                for(int i = 0; i < itemLists.size(); ++i)
+                {
+                   String curItem = itemLists.get(i).get(0); //get menu item name
+                   String curPrice = itemLists.get(i).get(1); //get menu item price
+                   double numPrice = Double.parseDouble(curPrice); //convert string to double
+                   numPrice = Math.round(numPrice * 100.0) / 100.0; //round to 2 decimals
+                   System.out.println(String.format("%d)   $%-6.2f    %s", i, numPrice, curItem)); 
+                }
+                System.out.println("Enter Item Number of item you wish to add");
+                int newItemNum = esql.readChoice();
+                String newName = itemLists.get(newItemNum).get(0);
+                String newPriceString = itemLists.get(newItemNum).get(1);
+                double newPrice = Double.parseDouble(newPriceString);
+                newPrice = Math.round(newPrice * 100.0) / 100.0;
+                query = String.format("INSERT INTO ItemStatus (orderid, itemName, lastUpdated, status, comments) VALUES ("+ oid +", '"+ newName +"', now()::timestamp, '"+statusDefault+"', '"+ commentsDefault +"' )");
+                esql.executeUpdate(query);
+                query = String.format("UPDATE Orders SET (total) = (total + " + newPrice + ") WHERE orderid =" + oid); 
+                esql.executeUpdate(query);
 
             }
             else if(numItem < itemquery.size() && numItem >= 0) //edit item
@@ -718,9 +748,9 @@ public class Cafe {
                String itemCostString = pricequery.get(0).get(0);
                double itemCost = Double.parseDouble(itemCostString);
                itemCost = Math.round(itemCost * 100.0) / 100.0;
-               System.out.println("0) swap item  1) remove item");
+               System.out.println("\n 0) swap item  \n 1) remove item");
                int numAction = esql.readChoice();
-               if(numAction == 0)
+               if(numAction == 0) //swap
                {
                   query = String.format("SELECT itemName, price FROM Menu");
                   List<List<String>> itemLists = esql.executeQueryAndReturnResult(query);
@@ -732,7 +762,7 @@ public class Cafe {
                      numPrice = Math.round(numPrice * 100.0) / 100.0; //round to 2 decimals
                      System.out.println(String.format("%d)   $%-6.2f    %s", i, numPrice, curItem)); 
                   }
-                  System.out.println("Enter New Item Number");
+                  System.out.println("\nEnter New Item Number");
                   int newItemNum = esql.readChoice();
                   String newName = itemLists.get(newItemNum).get(0);
                   String newPriceString = itemLists.get(newItemNum).get(1);
@@ -744,7 +774,7 @@ public class Cafe {
                   query = String.format("UPDATE Orders SET (total) = (total + " + priceModifier + ") WHERE orderid =" + oid); 
                   esql.executeUpdate(query);
                }
-               else if(numAction == 1)
+               else if(numAction == 1) //delete item
                {
                   //delete item and update order totalprice
                   if(itemquery.size() == 1) //when down to last item, if deleted, remove order completely
@@ -753,7 +783,7 @@ public class Cafe {
                      esql.executeUpdate(query);
                      query = String.format("DELETE FROM Orders WHERE orderid = " + oid);
                      esql.executeUpdate(query);
-                     System.out.println("Entire Order Deleted, last item removed");
+                     System.out.println("\nEntire Order Deleted, last item removed\n");
                      cont = false;
                   }
                   else if(itemquery.size() > 1)
@@ -763,17 +793,17 @@ public class Cafe {
                      query = String.format("UPDATE Orders SET (total) = (total - " + itemCost + ") WHERE orderid =" + oid); 
                      esql.executeUpdate(query);
 
-                     System.out.println("Item Removed");
+                     System.out.println("\nItem Removed\n");
                   }
                }
                else
                {
-                  System.out.println("Invalid Entry");
+                  System.out.println("\nInvalid Entry\n");
                }
             }
             else
             {
-               System.out.println("Invalid Entry");
+               System.out.println("\nInvalid Entry\n");
             }
          }while(cont == true);
       }
@@ -850,12 +880,12 @@ public class Cafe {
             int oid = Integer.parseInt(oidstring);
             query = String.format("SELECT * FROM ItemStatus I WHERE I.orderid = " + oid);
             List<List<String>> itemquery= esql.executeQueryAndReturnResult(query);
-            System.out.println("Order #: " + oid);
+            System.out.println("\nOrder #: " + oid);
             for(int j = 0; j < itemquery.size(); ++j)
             {   
-              System.out.print(itemquery.get(j).get(1).trim().replaceAll(" +", " ")+ " " + itemquery.get(j).get(2) + "\n"); 
+              System.out.print("  " + itemquery.get(j).get(1).trim().replaceAll(" +", " ")+ " " + itemquery.get(j).get(2) + "\n"); 
             }   
-            System.out.println(String.format("Total: $%.2f", numTotal)); 
+            System.out.println(String.format("Total: $%.2f\n", numTotal)); 
          }   
       }
       catch(Exception e)
