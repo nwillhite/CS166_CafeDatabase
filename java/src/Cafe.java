@@ -473,7 +473,7 @@ public class Cafe {
            String query = String.format("SELECT M.itemName FROM Menu M");
            List<List<String>> itemnames= esql.executeQueryAndReturnResult(query);
            System.out.println();
-           for(int i = 1; i < itemnames.size(); ++i)
+           for(int i = 0; i < itemnames.size(); ++i)
            {
               System.out.println(" " + i + ") " + itemnames.get(i).get(0));
            }
@@ -483,10 +483,6 @@ public class Cafe {
            {
                System.out.println("Invalid Input\n");
            }
-           else if(choice == 0)
-	   {
-	       return;
-	   }
            else
            {
                query = String.format("SELECT * FROM Menu M WHERE itemName = '" + itemnames.get(choice).get(0) + "'");
@@ -522,8 +518,8 @@ public class Cafe {
            String query = String.format("SELECT DISTINCT M.type FROM Menu M");
            List<List<String>> menutypes= esql.executeQueryAndReturnResult(query);
            System.out.println();
-           for(int i = 0 ; i < menutypes.size(); ++i)
-           {
+           for(int i = 0; i < menutypes.size(); ++i)
+           {   
                System.out.println(" "  + i + ") " + menutypes.get(i).get(0));
            }
            System.out.println("\n Select # for type you wish to browse: ");
