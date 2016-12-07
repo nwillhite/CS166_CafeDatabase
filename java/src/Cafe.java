@@ -319,11 +319,7 @@ public class Cafe {
 		  } break;
 		case "Manager ": 
 		  while(usermenu) {
-<<<<<<< HEAD
-                    System.out.println("Manager MAIN MENU");
-=======
                     System.out.println("MAIN MENU - Manager");
->>>>>>> working-branch
                     System.out.println("---------");
                     System.out.println("1. Browse Menu by ItemName");
                     System.out.println("2. Browse Menu by Type");
@@ -442,24 +438,7 @@ public class Cafe {
       }
    }//end
 
-<<<<<<< HEAD
-   public static String find_type(Cafe esql){
 	
-	try
-	{
-      String query = String.format("SELECT U.type FROM Users U WHERE U.login = '%s' ", authorisedUser);
-      
-      List<List<String>> userType = esql.executeQueryAndReturnResult(query);
-     
-      return userType.get(0).get(0);
-	}
-	catch(Exception e)
-	{
-         System.err.println (e.getMessage ());
-         return null;
-      }
-=======
-
 /*****************************************************************************/
 
  //  Beginning of user created functions //
@@ -481,7 +460,6 @@ public class Cafe {
            System.err.println (e.getMessage ());
            return null;
        }
->>>>>>> working-branch
    }
 
 
@@ -495,16 +473,20 @@ public class Cafe {
            String query = String.format("SELECT M.itemName FROM Menu M");
            List<List<String>> itemnames= esql.executeQueryAndReturnResult(query);
            System.out.println();
-           for(int i = 0; i < itemnames.size(); ++i)
+           for(int i = 1; i < itemnames.size(); ++i)
            {
               System.out.println(" " + i + ") " + itemnames.get(i).get(0));
            }
-           System.out.println("\n Select # for item details");
+           System.out.println("\n Select # for item details or 0 to exit");
            int choice = esql.readChoice();
            if(choice < 0 || choice >= itemnames.size())
            {
                System.out.println("Invalid Input\n");
            }
+           else if(choice == 0)
+	   {
+	       return;
+	   }
            else
            {
                query = String.format("SELECT * FROM Menu M WHERE itemName = '" + itemnames.get(choice).get(0) + "'");
@@ -1034,13 +1016,13 @@ public class Cafe {
         String editUser;
         boolean getChoice = true;
         
-        System.out.println("\tEnter User to Edit");
+        System.out.println("\n Enter User to Edit \n");
         editUser = System.console().readLine();
  
 
         while(getChoice)
         {
-            System.out.println("Update User Information");
+            System.out.println("\n Update User Information \n");
             System.out.println("1. Update Password");
             System.out.println("2. Update Phone Number");
             System.out.println("3. Update Favorite Items");
@@ -1075,10 +1057,10 @@ public class Cafe {
 
         while(getChoice)
         {
-            System.out.println("1. Add item");
+            System.out.println("\n1. Add item");
             System.out.println("2. Delete item");
             System.out.println("3. Update item");
-            System.out.println("4. Return to Main Menu");
+            System.out.println("4. Return to Main Menu \n");
 
             switch(esql.readChoice())
             {
@@ -1170,12 +1152,12 @@ public class Cafe {
 
        while(getChoice)
        {
-          System.out.println("1. Update Item Name");
+          System.out.println("\n1. Update Item Name");
           System.out.println("2. Update Item Type");
           System.out.println("3. Update Price");
           System.out.println("4. Update Description");
           System.out.println("5. Update imageUrl");
-          System.out.println("6. Return to Main Menu");
+          System.out.println("6. Return to Main Menu \n");
 
           switch(esql.readChoice())
           {
@@ -1278,7 +1260,7 @@ public class Cafe {
        try
        {
            
-         System.out.println("\tEnter Order Id");
+         System.out.println("\n Enter Order Id \n");
          orderId = esql.in.readLine();
          String query = String.format("SELECT * FROM ItemStatus WHERE orderid = '%s' ", orderId);
 
